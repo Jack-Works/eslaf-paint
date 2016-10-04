@@ -1,0 +1,21 @@
+{
+  "name": "eslaf-paint",
+  "version": "0.1.0",
+  "main": "index.js",
+  "author": "Jack Works (Vola Studio)",
+  "license": "MIT",
+  "dependencies": {
+    "camelize": "^1.0.0",
+    "canvas": "^1.4.0",
+    "css": "^2.2.1",
+    "lodash.defaultsdeep": "^4.6.0",
+    "lodash.reduceright": "^4.6.0",
+    "minimist": "^1.2.0"
+  },
+  "bin": {
+    "eslaf-paint": "./index.js"
+  },
+  "engines": {
+    "node": ">=v6.0.0"
+  }
+}
