@@ -1,5 +1,8 @@
 # Eslaf-paint
 
+## Recent changes
+- Oct 7, 2016 text-overflow: clip; now is available
+
 ## Usage
 > eslaf-paint --text textfile [Style file (.css)] [Picture files (.*)]
 
@@ -41,7 +44,7 @@ it will out put the result to './test-out/test-B' ($ is replaced with 'test' in 
 - The first value of a property is the default value
 
 ```
-text-overflow: break-line | zoom
+text-overflow: break-line | zoom | clip
 min-font-size: 0 | <length>
 max-width: Infinity | <length>
 x: <pos-x>
