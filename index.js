@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 'use strict'
 const merge = require('lodash.defaultsdeep')
 const path = require('path')
@@ -6,7 +7,7 @@ const fs = require('fs')
 const Canvas = require('./lib/canvas.js')
 
 const argv = require('minimist')(process.argv.slice(2))
-
+console.log(process.argv)
 const Styles = require('./lib/style.js')(((css, _) => {
 	if (!css) throw new Error('No CSS File provided')
 	if (_) console.warn(`Only ${css} will be used to draw the image`)

@@ -1,6 +1,7 @@
 # Eslaf-paint
 
 ## Recent changes
+- Oct 15, Fix globally install on Windows
 - Oct 7, 2016 text-overflow: clip; now is available
 
 ## Usage
