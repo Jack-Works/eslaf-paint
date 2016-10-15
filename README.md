@@ -1,6 +1,7 @@
 # Eslaf-paint
 
 ## Recent changes
+- Oct 15, Support CSS Selector * now, (but notice, all selector have the same importance)
 - Oct 15, Fix globally install on Windows
 - Oct 7, 2016 text-overflow: clip; now is available
 
@@ -40,6 +41,11 @@ With the command
 > eslaf-paint --text Example.js styles.css test.png
 
 it will out put the result to './test-out/test-B' ($ is replaced with 'test' in 'test.png')
+
+# Selectors
+- *
+- .[Name]
+- [Selector], [Selector]
 
 # All properties of Style CSS file
 - The first value of a property is the default value
