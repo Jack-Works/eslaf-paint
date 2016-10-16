@@ -1,12 +1,16 @@
 # Eslaf-paint
 
+## About 0.2.0
+Document will add soon
+
 ## Recent changes
+- Oct 16, BREAKING CHANGES on command arguments and config file, and Support paint Picture now
 - Oct 15, Support CSS Selector * now, (but notice, all selector have the same importance)
 - Oct 15, Fix globally install on Windows
 - Oct 7, 2016 text-overflow: clip; now is available
 
 ## Usage
-> eslaf-paint --text textfile [Style file (.css)] [Picture files (.*)]
+> eslaf-paint [textfile (.js|.json)] [Style file (.css)] [Picture files (.*)]
 
 * Only the first css file will be used, we will add import syntax for style file
 * Textfile can be a json or a js that export a Object we need
@@ -38,7 +42,7 @@ module.exports = {
 ```
 
 With the command
-> eslaf-paint --text Example.js styles.css test.png
+> eslaf-paint Example.js styles.css test.png
 
 it will out put the result to './test-out/test-B' ($ is replaced with 'test' in 'test.png')
 
