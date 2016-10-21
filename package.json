@@ -1,6 +1,6 @@
 {
   "name": "eslaf-paint",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "main": "index.js",
   "author": "Jack Works (Vola Studio)",
   "license": "MIT",
@@ -13,7 +13,7 @@
     "minimist": "^1.2.0"
   },
   "bin": {
-    "eslaf-paint": "./index.js"
+    "eslaf-paint": "./cli.js"
   },
   "engines": {
     "node": ">=v6.0.0"
