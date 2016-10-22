@@ -1,4 +1,4 @@
-module.exports = argv => {
+module.exports = (...files) => {
 	'use strict'
 	const merge = require('lodash.defaultsdeep')
 	const path = require('path')
@@ -11,21 +11,21 @@ module.exports = argv => {
 		(css, _) => 
 			checkFile('No CSS file found')(css, _) ||
 			fs.readFileSync(css, 'utf-8'))
-		(...argv._.filter(checkSrcType('css'))))
+		(...files.filter(checkSrcType('css'))))
 
 	const config =
 		((c, _) =>
 			checkFile('No config file found')(c, _) ||
 			require(path.resolve(process.cwd(), c))
 		)
-		(...argv._.filter(checkSrcType('requirable')))
+		(...files.filter(checkSrcType('requirable')))
 
 	const drawType = {
 		text: (canvasContext, {text, styles}) =>
 			canvasContext.drawText(text, styles, {stroke: !!styles.strokeWeight}),
 
-		img: (canvasContext, {img, styles}) =>
-			canvasContext.drawImage(img, styles)
+		img: (canvasContext, {src, styles}) =>
+			canvasContext.drawImage(src, styles)
 	}
 	const getTypeof = orig => {
 		if (orig.type == 'text') return drawType.text
@@ -34,7 +34,7 @@ module.exports = argv => {
 	}
 	const oldTextTypeToNew = op => ({type: 'text', text: op[0], styles: op[2], use: op[1]})
 	// for each img
-	argv._.filter(v => !(checkSrcType('css')(v) || checkSrcType('requirable')(v))).forEach(image => {
+	files.filter(v => !(checkSrcType('css')(v) || checkSrcType('requirable')(v))).forEach(image => {
 		const src = path.normalize('./' + image)
 		const ext = path.extname(src)
 		const base = path.basename(src, ext)
