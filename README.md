@@ -1,6 +1,9 @@
 # Eslaf-paint
 
 ## Recent changes
+- Oct 23, Now some of the input type support async Promise
+- Oct 23, Now you can give type pic a Buffer instead
+- Oct 22, Now can set the width and height of the img type
 - Oct 21, Now can import as a module
 - Oct 16, **BREAKING CHANGES** on command arguments and config file, and Support paint Picture now
 - Oct 15, Support CSS Selector * now, (but notice, **all selector have the same importance**)
@@ -51,10 +54,13 @@ An Object
 ### type == img
 #### Attrs
 - src: Src of the picture
+- src: Buffer of the picture `.js input only`
+- src: Promise => Buffer of the picture `.js input only`
 
 ### type == text
 #### Attrs
 - text: Text will be painted
+- text: Promise => String `.js input only`
 ---------------------------------------
 ## Example
 ### JSON Type
@@ -82,12 +88,14 @@ Since we start to use the new config, the old array style is still supported
 ```JS
 const generate = i => ({
     type: "text",
-    text: Math.random().toString(),
+    text: i == 0 ? Math.random().toString() : new Promise(
+        resolve => setTimeout(() => resolve('wow'), 2000)
+    ),
     use: "classText",
     styles: {x: 40 + i}
 })
 module.exports = {
-    [$_output_dir]: [generate(1), generate(2)]
+    [$_output_dir]: [generate(1), generate(2), generate(0)]
 }
 ```
 
@@ -108,6 +116,8 @@ Each type listed in Paint support **some of** the attrs
 ```
 x: <pos-x>
 y: <pos-y>
+width: <length>
+height: <length>
 ```
 
 ## text
