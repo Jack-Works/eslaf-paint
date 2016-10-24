@@ -1,6 +1,7 @@
 # Eslaf-paint
 
 ## Recent changes
+- Oct 24, The whole config can be a Promise now
 - Oct 23, Now some of the input type support async Promise
 - Oct 23, Now you can give type pic a Buffer instead
 - Oct 22, Now can set the width and height of the img type
@@ -84,7 +85,7 @@ Since we start to use the new config, the old array style is still supported
 }
 ```
 
-### JS Type
+### JS Type (example1.js)
 ```JS
 const generate = i => ({
     type: "text",
@@ -97,6 +98,14 @@ const generate = i => ({
 module.exports = {
     [$_output_dir]: [generate(1), generate(2), generate(0)]
 }
+```
+### Async JS Type
+```JS
+module.exports = new Promise(
+    resolve => setTimeout(
+        () => resolve(require('./example1.js'))
+    , 2000)
+)
 ```
 
 # Style file, the CSS-like part

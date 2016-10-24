@@ -1,11 +1,11 @@
-module.exports = (...files) => {
-	const merge = require('lodash.defaultsdeep')
-	const path = require('path')
-	const fs = require('fs')
-	const co = require('co')
-	const ProgressBar = require('progress')
+const merge = require('lodash.defaultsdeep')
+const path = require('path')
+const fs = require('fs')
+const co = require('co')
+const ProgressBar = require('progress')
+const Canvas = require('./lib/canvas.js')
 
-	const Canvas = require('./lib/canvas.js')
+module.exports = (...files) => {
 	const {checkFile, checkSrcType} = require('./lib/check.js')
 
 	const Styles = require('./lib/style.js')((
@@ -45,45 +45,50 @@ module.exports = (...files) => {
 	}
 	const oldTextTypeToNew = op => ({type: 'text', text: op[0], styles: op[2], use: op[1]})
 	// for each img
-	files.filter(v => !(checkSrcType('css')(v) || checkSrcType('requirable')(v))).forEach(image => co(function* () {
-		const bar = new ProgressBar(
-			`[eslaf-paint]: :current/:total [:bar] ${image} => :output`,
-			{total: 0, width: 50, complete: '=', incomplete: ' '})
-		const src = path.normalize('./' + image)
-		const ext = path.extname(src)
-		const base = path.basename(src, ext)
-		// each text profile
-		let length = 0
-		for(let profile in config) length ++
-		bar.total = length
+	if (config instanceof Promise) config.then(work)
+	else work()
+	
+	function work () {
+		files.filter(v => !(checkSrcType('css')(v) || checkSrcType('requirable')(v))).forEach(image => co(function* () {
+			const bar = new ProgressBar(
+				`[eslaf-paint]: :current/:total [:bar] ${image} => :output`,
+				{total: 0, width: 50, complete: '=', incomplete: ' '})
+			const src = path.normalize('./' + image)
+			const ext = path.extname(src)
+			const base = path.basename(src, ext)
+			// each text profile
+			let length = 0
+			for(let profile in config) length ++
+			bar.total = length
 
-		for(let profile in config) {
-			let canvas = new Canvas(src)
-			const task = config[profile]
-			// each operation
-			let ops = yield Promise.all(
-				task
-					.map(op => Array.isArray(op) ? oldTextTypeToNew(op) : op)
-					.map(op => {
-						op.styles = merge(op.styles, Styles('.' + op.use))
-						return op
-					})
-					.map(getTypeof)
-			)
-
-			ops.forEach(
-				op => op.forEach(
-					([f, op]) => f(canvas, op)
+			for(let profile in config) {
+				let canvas = new Canvas(src)
+				const task = config[profile]
+				// each operation
+				let ops = yield Promise.all(
+					task
+						.map(op => Array.isArray(op) ? oldTextTypeToNew(op) : op)
+						.map(op => {
+							op.styles = merge(op.styles, Styles('.' + op.use))
+							return op
+						})
+						.map(getTypeof)
 				)
-			)
 
-			const outputPattern = profile.replace(/\$/g, base)
-			const base_out = path.basename(outputPattern)
-			const outputDir = path.dirname(outputPattern)
-			const final = path.join(outputDir, base_out + ext)
-			if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir)
-			canvas.toFile(final)
-			bar.tick({output: final})
-		}
-	}))
+				ops.forEach(
+					op => op.forEach(
+						([f, op]) => f(canvas, op)
+					)
+				)
+
+				const outputPattern = profile.replace(/\$/g, base)
+				const base_out = path.basename(outputPattern)
+				const outputDir = path.dirname(outputPattern)
+				const final = path.join(outputDir, base_out + ext)
+				if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir)
+				canvas.toFile(final)
+				bar.tick({output: final})
+			}
+		}))
+	}
 }
