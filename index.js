@@ -5,7 +5,9 @@ const co = require('co')
 const ProgressBar = require('progress')
 const Canvas = require('./lib/canvas.js')
 
-module.exports = (...files) => {
+module.exports = argv => {
+	const files = argv._
+
 	const {checkFile, checkSrcType} = require('./lib/check.js')
 
 	const Styles = require('./lib/style.js')((
@@ -14,7 +16,7 @@ module.exports = (...files) => {
 			fs.readFileSync(css, 'utf-8'))
 		(...files.filter(checkSrcType('css'))))
 
-	const config =
+	let config =
 		((c, _) =>
 			checkFile('No config file found')(c, _) ||
 			require(path.resolve(process.cwd(), c))
@@ -45,8 +47,10 @@ module.exports = (...files) => {
 	}
 	const oldTextTypeToNew = op => ({type: 'text', text: op[0], styles: op[2], use: op[1]})
 	// for each img
+	if (config instanceof Function) config = config(argv)
 	if (config instanceof Promise) config.then(work)
-	else work()
+	else if (config instanceof Object) work()
+	else throw new TypeError('Bad profile')
 	
 	function work () {
 		files.filter(v => !(checkSrcType('css')(v) || checkSrcType('requirable')(v))).forEach(image => co(function* () {

@@ -2,4 +2,4 @@
 'use strict'
 
 const argv = require('minimist')(process.argv.slice(2))
-require('./index.js')(...argv._)
+require('./index.js')(argv)

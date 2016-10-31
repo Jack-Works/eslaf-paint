@@ -1,16 +1,4 @@
 # Eslaf-paint
-
-## Recent changes
-- Oct 24, The whole config can be a Promise now
-- Oct 23, Now some of the input type support async Promise
-- Oct 23, Now you can give type pic a Buffer instead
-- Oct 22, Now can set the width and height of the img type
-- Oct 21, Now can import as a module
-- Oct 16, **BREAKING CHANGES** on command arguments and config file, and Support paint Picture now
-- Oct 15, Support CSS Selector * now, (but notice, **all selector have the same importance**)
-- Oct 15, Fix globally install on Windows
-- Oct 7, 2016 text-overflow: clip; now is available
-
 # Usage
 ``` eslaf-paint [textfile (.js|.json)] [Style file (.css)] [Picture files (.*)] ```
 
@@ -23,7 +11,7 @@ eslaf-paint Example.js styles.css test.png
 
 ## As module
 ``` JS
-require('eslaf-paint')('Example.js', 'style.css', 'test.png')
+require('eslaf-paint')({_: ['Example.js', 'style.css', 'test.png']})
 ```
 
 
@@ -85,7 +73,17 @@ Since we start to use the new config, the old array style is still supported
 }
 ```
 
-### JS Type (example1.js)
+### JS Function Type (example0.js)
+This type return a Function that take the all cli argvs as arguments 
+and return a Object Type or a Async Type
+```JS
+module.exports = CommandLineArguments => require('./example1.js')
+```
+or
+```JS
+module.exports = CommandLineArguments => require('./async.js')
+```
+### JS Object Type (example1.js)
 ```JS
 const generate = i => ({
     type: "text",
@@ -99,7 +97,7 @@ module.exports = {
     [$_output_dir]: [generate(1), generate(2), generate(0)]
 }
 ```
-### Async JS Type
+### Async JS Type (async.js)
 ```JS
 module.exports = new Promise(
     resolve => setTimeout(
@@ -157,3 +155,16 @@ line-height: document this property later
 - \<align-y>: top | bottom | center
 - \<short>: short for \<align-x>-\<align-y>, map from keypad, Not recommended
 - \<color>: CSS color
+
+## Change log
+- Oct 31, **BREAKING CHANGE** Now you can get the command line arguments in the JS type profile by providing a Function
+- Oct 31, Fix the CRLF problem
+- Oct 24, The whole config can be a Promise now
+- Oct 23, Now some of the input type support async Promise
+- Oct 23, Now you can give type pic a Buffer instead
+- Oct 22, Now can set the width and height of the img type
+- Oct 21, Now can import as a module
+- Oct 16, **BREAKING CHANGES** on command arguments and config file, and Support paint Picture now
+- Oct 15, Support CSS Selector * now, (but notice, **all selector have the same importance**)
+- Oct 15, Fix globally install on Windows
+- Oct 7, 2016 text-overflow: clip; now is available
