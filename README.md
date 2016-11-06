@@ -1,33 +1,30 @@
-# Eslaf-paint
-# Usage
+# Eslaf-part (Command Line Tool)
+## Usage
 ``` eslaf-paint [textfile (.js|.json)] [Style file (.css)] [Picture files (.*)] ```
-
-Only **first** textfile and style file will be accepted
-
-## As command
+*More than 1 picture is okay(not as module way)*
+## Output Pattern in the textfile
+> Output dir, the `$` symbol will be replaced by the input file Name
 ```
-eslaf-paint Example.js styles.css test.png
+'$/$-output' + 'input.png' => 'input/input-output.png'
 ```
 
-## As module
+# Eslaf-paint (JavaScript Module)
+Only **first** textfile, image file and style file will be accepted
+## Signature
+eslafPaint: Arguments{_: Array} => Promise<{name: buffer}>
+
 ``` JS
 require('eslaf-paint')({_: ['Example.js', 'style.css', 'test.png']})
 ```
 
-
 # Textfile
+## Promise support
+You can Promise everything in the textfile!
 ## Format
 ```
 Object {
-    String outputPattern: Paint[] 
+    String name: Paint[] 
 }
-```
-
-## outputPattern
-A String
-> Output dir, the `$` symbol will be replaced by the input file Name
-```
-'$/$-output' + 'input.png' => 'input/input-output.png'
 ```
 
 ## Paint
@@ -43,39 +40,21 @@ An Object
 ### type == img
 #### Attrs
 - src: Src of the picture
-- src: Buffer of the picture `.js input only`
-- src: Promise => Buffer of the picture `.js input only`
+- src: Buffer of the picture
 
 ### type == text
 #### Attrs
 - text: Text will be painted
-- text: Promise => String `.js input only`
 ---------------------------------------
 ## Example
 ### JSON Type
-Since we start to use the new config, the old array style is still supported
-```JSON
-{
-    "$_output": [
-        {
-            "type": "text",
-            "text": "Hello, world",
-            "use": "classText",
-            "styles": {"x": "20px"}
-        },
-        {
-            "type": "img",
-            "src": "./background.png",
-            "use": "",
-            "styles": {"x": "-20px"}
-        }
-    ]
-}
-```
+> JSON style is not recommended now, but you can still use it
+  And also, we will not remove the support for JSON type
+  You can use the JSON type just like JS type, but many features are disabled (like Promise or Buffer)
 
 ### JS Function Type (example0.js)
-This type return a Function that take the all cli argvs as arguments 
-and return a Object Type or a Async Type
+> Arguments => Paint[]
+> Arguments => Promise<Paint[]>
 ```JS
 module.exports = CommandLineArguments => require('./example1.js')
 ```
@@ -92,6 +71,10 @@ const generate = i => ({
     ),
     use: "classText",
     styles: {x: 40 + i}
+}, {
+    type: "img",
+    raw: fs.readFileSync('./x.png'),
+    use: "pic"
 })
 module.exports = {
     [$_output_dir]: [generate(1), generate(2), generate(0)]
@@ -157,14 +140,4 @@ line-height: document this property later
 - \<color>: CSS color
 
 ## Change log
-- Oct 31, **BREAKING CHANGE** Now you can get the command line arguments in the JS type profile by providing a Function
-- Oct 31, Fix the CRLF problem
-- Oct 24, The whole config can be a Promise now
-- Oct 23, Now some of the input type support async Promise
-- Oct 23, Now you can give type pic a Buffer instead
-- Oct 22, Now can set the width and height of the img type
-- Oct 21, Now can import as a module
-- Oct 16, **BREAKING CHANGES** on command arguments and config file, and Support paint Picture now
-- Oct 15, Support CSS Selector * now, (but notice, **all selector have the same importance**)
-- Oct 15, Fix globally install on Windows
-- Oct 7, 2016 text-overflow: clip; now is available
+- Nov 7, 2016: 0.3.0 release

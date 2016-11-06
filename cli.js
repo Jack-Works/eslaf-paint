@@ -10,27 +10,24 @@ const t = v =>
 	v.endsWith('.css') === false &&
 	v.endsWith('.js') === false
 
-argv._.filter(t).map(img => {
-	argv._.map(v => {
-		if(!t(v)) img
-		else v
-	})
-	require('./index.js')(argv).then(data => {
+if (!argv.help && !argv.h)
+argv._.filter(t).forEach(img => {
+	let _argv = argv
+	_argv._ = _argv._.filter(x => !t(x))
+	_argv._.push(img)
+	require('./index.js')(_argv).then(data => {
 		for(var name in data) {
 			const b = data[name]
-			const output = name.replace(/$/g, path.basename(img))
+			const output = name.replace(/\$/g, path.basename(img))
 			const outputDir = path.dirname(output)
 			if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir)
 			fs.writeFileSync(output, b)
 		}
 	})
 })
-argv._.filter(t).length == 0 && require('./index.js')(argv).then(data => {
-		for(var name in data) {
-			const b = data[name]
-			const output = name.replace(/$/g, path.basename(img))
-			const outputDir = path.dirname(output)
-			if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir)
-			fs.writeFileSync(output, b)
-		}
-	})
+
+else console.log(`
+Usage:
+eslaf-paint profile(.js|.json) cssfile(.css) picture1 (picture2...)
+The order of the parameter doesn't matter
+`)
