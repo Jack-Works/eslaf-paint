@@ -15,14 +15,13 @@ argv._.filter(t).forEach(img => {
 	let _argv = argv
 	_argv._ = _argv._.filter(x => !t(x))
 	_argv._.push(img)
-	require('./index.js')(_argv).then(data => {
-		for(var name in data) {
-			const b = data[name]
-			const output = name.replace(/\$/g, path.basename(img))
-			const outputDir = path.dirname(output)
-			if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir)
-			fs.writeFileSync(output, b)
-		}
+	require('./index.js')(_argv, (name, data) => {
+		const b = data[name]
+		const output = name.replace(/\$/g, path.basename(img))
+		const outputDir = path.dirname(output)
+		if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir)
+		fs.writeFileSync(output, b)
+		console.log(`eslaf-paint: Generated ${output}`)
 	})
 })
 

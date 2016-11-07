@@ -42,7 +42,7 @@ function staticPainer ({staticConfig, image, canvas: {width, height}}) {
 	return canvas.canvas.toBuffer()
 }
 
-module.exports = co.wrap(function* (argv) {
+module.exports = co.wrap(function* (argv, stepCallback = () => void 0) {
 	let [error, {img: image, css: Css, js: Configs}] = require('./lib/solve.file.js')(argv._)
 	const Styles = require('./lib/style.js')(Css)
 	if (error) throw error
@@ -70,5 +70,9 @@ module.exports = co.wrap(function* (argv) {
 					height: Styles('canvas').height
 				}}
 			)
-		), staticPainer)
+		), (data, name) => {
+			const to = staticPainer(data,  name)
+			stepCallback(name, data)
+			return to
+		})
 })

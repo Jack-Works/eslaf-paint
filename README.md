@@ -11,7 +11,7 @@
 # Eslaf-paint (JavaScript Module)
 Only **first** textfile, image file and style file will be accepted
 ## Signature
-eslafPaint: Arguments{_: Array} => Promise<{name: buffer}>
+Arguments{_: Array}, eachStepCallback: function => Promise<{name: buffer}>
 
 ``` JS
 require('eslaf-paint')({_: ['Example.js', 'style.css', 'test.png']})
