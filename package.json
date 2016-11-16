@@ -19,5 +19,9 @@
   },
   "engines": {
     "node": ">=v6.0.0"
+  },
+  "types": "./module-function.d.ts",
+  "devDependencies": {
+    "@types/node": "^6.0.48"
   }
 }

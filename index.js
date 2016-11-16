@@ -72,7 +72,6 @@ module.exports = co.wrap(function* (argv, stepCallback = () => void 0) {
 			)
 		), (data, name) => {
 			const to = staticPainer(data,  name)
-			require('fs').writeFileSync('wowo.png')
 			stepCallback(name, to)
 			return to
 		})
