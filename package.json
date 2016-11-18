@@ -1,6 +1,7 @@
 {
   "name": "eslaf-paint",
-  "version": "0.3.0",
+  "version": "0.3.9-alpha",
+  "Note": "Since this commit, we are waiting for release 0.4.0, start to support plugins",
   "main": "index.js",
   "author": "Jack Works (Vola Studio)",
   "license": "MIT",
@@ -12,7 +13,8 @@
     "lodash.clonedeep": "^4.5.0",
     "lodash.defaultsdeep": "^4.6.0",
     "lodash.reduceright": "^4.6.0",
-    "minimist": "^1.2.0"
+    "minimist": "^1.2.0",
+    "parse-unit": "^1.0.1"
   },
   "bin": {
     "eslaf-paint": "./cli.js"
