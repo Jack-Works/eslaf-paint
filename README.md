@@ -11,10 +11,23 @@
 # Eslaf-paint (JavaScript Module)
 Only **first** textfile, image file and style file will be accepted
 ## Signature
-Arguments{_: Array}, eachStepCallback: function => Promise<{name: buffer}>
+```
+function EslafPaint(
+        argv: {
+            _: [profileArg, cssArg, imageArg], // in any order is okay
+            [anyArg: string]: any
+        },
+        stepCallback?: (name: string, image: Buffer) => void
+    ): Promise<{
+        [name: string]: Buffer
+    }>
+```
 
 ``` JS
-require('eslaf-paint')({_: ['Example.js', 'style.css', 'test.png']})
+require('eslaf-paint')(
+    {_: ['Example.js', 'style.css', 'test.png']},
+    (name, img) => {/* do something */})
+.then(data => 'Yeah!', err => 'Oops!')
 ```
 
 # Textfile
@@ -112,23 +125,22 @@ height: <length>
 
 ## text
 ```
-text-overflow: break-line | zoom | clip
-min-font-size: 0 | <length>
+text-overflow: break-line | clip
 max-width: Infinity | <length>
 x: <pos-x>
 y: <pos-y>
 align: <align-x>-<align-y> | <short>
 
-font-size,
-font-family,
+font-size
+font-family
+font-weight
+font-style
+line-height: <px>; use in text-overflow: break-line
 color
 text-shadow
 
-font-weight: 0 | <length>
-
 stroke-color: none | <color>
 stroke-weight: 0 | <length>
-line-height: document this property later
 ```
 
 ### Valid value Type
@@ -141,3 +153,4 @@ line-height: document this property later
 
 ## Change log
 - Nov 7, 2016: 0.3.0 release
+- Nov 18, 2016: Support Plugin and font-style, removed text-overflow: zoom
