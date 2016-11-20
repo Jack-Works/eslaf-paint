@@ -1,6 +1,7 @@
 # Eslaf-part (Command Line Tool)
 ## Usage
 ``` eslaf-paint [textfile (.js|.json)] [Style file (.css)] [Picture files (.*)] ```
+
 *More than 1 picture is okay(not as module way)*
 ## Output Pattern in the textfile
 > Output dir, the `$` symbol will be replaced by the input file Name
@@ -9,97 +10,76 @@
 ```
 
 # Eslaf-paint (JavaScript Module)
-Only **first** textfile, image file and style file will be accepted
+Only **first** type-of argument required will be accepted
 ## Signature
-```
+```typescript
+type CSSArg = string | {type: 'css', data: string} | undefined
+type ImageArg = string | {type: 'image', data: Buffer} | undefined
 function EslafPaint(
-        argv: {
-            _: [profileArg, cssArg, imageArg], // in any order is okay
-            [anyArg: string]: any
-        },
-        stepCallback?: (name: string, image: Buffer) => void
-    ): Promise<{
-        [name: string]: Buffer
-    }>
+    argv: {
+        _: [ProfileArg, CSSArg, ImageArg], // in any order is okay
+        [anyArg: string]: any
+    },
+    stepCallback?: (name: string, image: Buffer) => void
+): Promise<{
+    [name: string]: Buffer
+}>{}
 ```
+> if `CSSArg` is not provided,
+eslaf-paint will use `{type: 'css', data: 'canvas {}'}` as default value
 
-``` JS
-require('eslaf-paint')(
-    {_: ['Example.js', 'style.css', 'test.png']},
-    (name, img) => {/* do something */})
-.then(data => 'Yeah!', err => 'Oops!')
-```
+> if `ImageArg` is not provided,
+eslaf-paint will use the width and height property in the `canvas` Selector
+to create a new canvas,
+like `canvas {width: 400, height: 300}`
 
-# Textfile
-## Promise support
-You can Promise everything in the textfile!
+## Notice
+We assume string ends with `.js` or `.json` is a ProfileArg and `.css` is a CSSArg
+
+Any other type of strings is ImageArg
+
+# Profile
+> To TypeScript user: `module-function.d.ts` is provided 
 ## Format
-```
-Object {
-    String name: Paint[] 
+```typescript
+type ProfileArg =
+    string | 
+    {type: 'profile', data: Profile} |
+    {type: 'profile', data: Promise<Profile>} |
+    {type: 'profile', data: (args: any) => Profile} |
+    {type: 'profile', data: (args: any) => Promise<Profile>}
+// string is path to profile
+
+type Paint = PaintText | PaintImage
+type Profile = {
+    [name: string]: Paint[] | Promise<Paint[]>
 }
 ```
 
-## Paint
-An Object
-> Contain the info about how to paint the picture
+## Paint Types
+> `use` means the CSS class to use
 
-### General attrs:
-- type: The type of the Paint: 'text' or 'img' 
-- use: The css class this object will use
-- styles: Extra styles(Object, not css string), like style="" in html
+### Text
 
-
-### type == img
-#### Attrs
-- src: Src of the picture
-- src: Buffer of the picture
-
-### type == text
-#### Attrs
-- text: Text will be painted
----------------------------------------
-## Example
-### JSON Type
-> JSON style is not recommended now, but you can still use it
-  And also, we will not remove the support for JSON type
-  You can use the JSON type just like JS type, but many features are disabled (like Promise or Buffer)
-
-### JS Function Type (example0.js)
-> Arguments => Paint[]
-> Arguments => Promise<Paint[]>
-```JS
-module.exports = CommandLineArguments => require('./example1.js')
-```
-or
-```JS
-module.exports = CommandLineArguments => require('./async.js')
-```
-### JS Object Type (example1.js)
-```JS
-const generate = i => ({
-    type: "text",
-    text: i == 0 ? Math.random().toString() : new Promise(
-        resolve => setTimeout(() => resolve('wow'), 2000)
-    ),
-    use: "classText",
-    styles: {x: 40 + i}
-}, {
-    type: "img",
-    raw: fs.readFileSync('./x.png'),
-    use: "pic"
-})
-module.exports = {
-    [$_output_dir]: [generate(1), generate(2), generate(0)]
+```typescript
+type PaintText = {
+    type: 'text',
+    text: string | Promise<string>,
+    use?: string | Promise<string>,
+    styles?: CSSObject | Promise<CSSObject>
 }
 ```
-### Async JS Type (async.js)
-```JS
-module.exports = new Promise(
-    resolve => setTimeout(
-        () => resolve(require('./example1.js'))
-    , 2000)
-)
+
+### Image
+```typescript
+type ImageSrc = string | Buffer
+type PaintImage = {
+    type: 'img',
+    src: ImageSrc | Promise<ImageSrc>,
+    use?: string | Promise<string>,
+    styles?: CSSObject | Promise<CSSObject>
+}
+// string is path to the image
 ```
 
 # Style file, the CSS-like part
@@ -115,42 +95,51 @@ Each type listed in Paint support **some of** the attrs
 
 *If the valid value is not listed, it is same with CSS* 
 
-## img
+## canvas
+```CSS
+canvas {
+    x: <int>
+    y: <int>
+}
 ```
-x: <pos-x>
-y: <pos-y>
-width: <length>
-height: <length>
+
+## img
+```CSS
+.className {
+    x: <pos-x>
+    y: <pos-y>
+    width: <length>
+    height: <length>
+}
 ```
 
 ## text
+```CSS
+.className {
+    text-overflow: break-line | clip
+    x: <pos-x>
+    y: <pos-y>
+
+    font-size
+    font-family
+    font-weight
+    font-style
+    line-height: <px>; use in text-overflow: break-line
+    color
+    text-shadow
+
+    stroke-color: none | <color>
+    stroke-weight: 0 | <length>
+}
 ```
-text-overflow: break-line | clip
-max-width: Infinity | <length>
-x: <pos-x>
-y: <pos-y>
-align: <align-x>-<align-y> | <short>
 
-font-size
-font-family
-font-weight
-font-style
-line-height: <px>; use in text-overflow: break-line
-color
-text-shadow
+### Notice
+> `<pos-x>` and `<pos-y>`: can be negative
 
-stroke-color: none | <color>
-stroke-weight: 0 | <length>
-```
+# Plugin System
+Document later
 
-### Valid value Type
-- \<length>: px only
-- \<pos-x> and \<pos-y>: can be negative
-- \<align-x>: left | right | center
-- \<align-y>: top | bottom | center
-- \<short>: short for \<align-x>-\<align-y>, map from keypad, Not recommended
-- \<color>: CSS color
-
-## Change log
+# Change log
+- Nov 11, 2016: 0.4.0 release
 - Nov 7, 2016: 0.3.0 release
 - Nov 18, 2016: Support Plugin and font-style, removed text-overflow: zoom

@@ -76,3 +76,5 @@ module.exports = co.wrap(function* (argv, stepCallback = () => void 0) {
 			return to
 		})
 })
+
+module.exports.Plugins = EslafPaintCanvas.Plugins

@@ -1,7 +1,6 @@
 {
   "name": "eslaf-paint",
-  "version": "0.3.9-alpha",
-  "Note": "Since this commit, we are waiting for release 0.4.0, start to support plugins",
+  "version": "0.4.0",
   "main": "index.js",
   "author": "Jack Works (Vola Studio)",
   "license": "MIT",
