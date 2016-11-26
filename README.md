@@ -1,4 +1,4 @@
-# Eslaf-part (Command Line Tool)
+# Eslaf-paint (Command Line Tool)
 ## Usage
 ``` eslaf-paint [textfile (.js|.json)] [Style file (.css)] [Picture files (.*)] ```
 
@@ -137,9 +137,25 @@ canvas {
 > `<pos-x>` and `<pos-y>`: can be negative
 
 # Plugin System
-Document later
+*Document later*
+## Load a plugin
+```js
+// module way
+require('eslaf-paint').lib.loadPlugin(plugin)
+// config file way
+module.exports = argvs => {
+    argvs.lib.loadPlugin(plugin)
+}
+```
+## Write a plugin
+```js
+module.exports = Plugins => {
+    // Inject your function here
+}
+```
 
 # Change log
+- Nov 26, 2016: Plugin now can apply on the image type
+- Nov 18, 2016: Support Plugin and font-style
 - Nov 11, 2016: 0.4.0 release
 - Nov 7, 2016: 0.3.0 release
-- Nov 18, 2016: Support Plugin and font-style, removed text-overflow: zoom

@@ -47,6 +47,7 @@ module.exports = co.wrap(function* (argv, stepCallback = () => void 0) {
 	const Styles = require('./lib/style.js')(Css || 'canvas {}')
 	if (error) throw error
 
+	argv.lib = EslafPaintCanvas
 	if (Configs instanceof Function) Configs = Configs(argv)
 	
 	const transformOldTextTypeToNew =
@@ -76,5 +77,4 @@ module.exports = co.wrap(function* (argv, stepCallback = () => void 0) {
 			return to
 		})
 })
-
-module.exports.Plugins = EslafPaintCanvas.Plugins
+module.exports.lib = EslafPaintCanvas
