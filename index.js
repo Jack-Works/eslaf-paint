@@ -1,6 +1,5 @@
 const merge = require('lodash.defaultsdeep')
 const clone = require('lodash.clonedeep')
-const path = require('path')
 const fs = require('fs')
 const co = require('co')
 const EslafPaintCanvas = require('./lib/canvas.js')

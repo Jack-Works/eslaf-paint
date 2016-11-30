@@ -127,6 +127,7 @@ canvas {
     line-height: <px>; use in text-overflow: break-line
     color
     text-shadow
+    text-align
 
     stroke-color: none | <color>
     stroke-weight: 0 | <length>
@@ -155,6 +156,7 @@ module.exports = Plugins => {
 ```
 
 # Change log
+- Nov 30, 2016: Fix some bugs, and support text-align
 - Nov 26, 2016: Plugin now can apply on the image type
 - Nov 18, 2016: Support Plugin and font-style
 - Nov 11, 2016: 0.4.0 release
