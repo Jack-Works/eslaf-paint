@@ -117,6 +117,9 @@ canvas {
 ```CSS
 .className {
     text-overflow: break-line | clip
+    /* If you want to this attr work,
+    you need to set `width` to text */
+    
     x: <pos-x>
     y: <pos-y>
 
@@ -124,10 +127,12 @@ canvas {
     font-family
     font-weight
     font-style
-    line-height: <px>; use in text-overflow: break-line
+    line-height: <px>
+    /* use in text-overflow: break-line */
     color
     text-shadow
     text-align
+    width
 
     stroke-color: none | <color>
     stroke-weight: 0 | <length>
@@ -156,6 +161,7 @@ module.exports = Plugins => {
 ```
 
 # Change log
+- Dec 12, 2016: Fix some bugs
 - Nov 30, 2016: Fix some bugs, and support text-align
 - Nov 26, 2016: Plugin now can apply on the image type
 - Nov 18, 2016: Support Plugin and font-style
