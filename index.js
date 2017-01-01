@@ -2,78 +2,92 @@ const merge = require('lodash.defaultsdeep')
 const clone = require('lodash.clonedeep')
 const fs = require('fs')
 const co = require('co')
+const Jimp = require('jimp')
 const EslafPaintCanvas = require('./lib/canvas.js')
+const parseStyles = require('./lib/style.js')
 
 const map = (obj, fn) => {
 	obj = clone(obj)
-	for(let i in obj) obj[i] = fn(obj[i], i)
-	return obj	
-}
-
-const length = obj => {
-	let i = 0
-	for(let n in obj) i ++
-	return i
+	for (let i in obj) obj[i] = fn(obj[i], i)
+	return obj
 }
 
 const drawType = {
 	text: (canvasContext, {text, styles}) =>
-		canvasContext.drawText(text, styles, {stroke: !!styles.strokeWeight}),
+		canvasContext.drawText(text, styles, { stroke: !!styles.strokeWeight }),
 
-	img: (canvasContext, {styles, raw}) => 
-		canvasContext.drawImage(raw, styles)
+	img: (canvasContext, {styles, src}) =>
+		canvasContext.drawImage(src, styles)
 }
 
 const getTypeof = orig => {
-	if (orig.type == 'text') return [drawType.text, orig]
-	if (orig.type == 'img') return [drawType.img, orig]
+	dt = drawType[orig.type]
+	if(dt) return [dt, orig]
 	throw new TypeError(`Unknown paint type ${orig.type}`)
 }
 
-function staticPainer ({staticConfig, image, canvas: {width, height}}) {
+function staticPainer({staticConfig, image, canvas: {width, height}}) {
 	const canvas = new EslafPaintCanvas({
 		buffer: image, width, height
 	})
 	staticConfig.map(getTypeof)
-	.forEach(
+		.forEach(
 		([paintFunction, data]) => paintFunction(canvas, data)
-	)
+		)
 	return canvas.canvas.toBuffer()
 }
 
+function isString(x) {
+	return Object.prototype.toString.call(x) === "[object String]"
+}
+
+function getPNGBuffer(img) {
+	return new Promise(function (fulfill, reject) {
+		img.getBuffer(Jimp.MIME_PNG, (err, buf) => {
+			if(err) {
+				reject(err)
+			} else {
+				fulfill(buf)
+			}
+		})
+	})
+}
+
 module.exports = co.wrap(function* (argv, stepCallback = () => void 0) {
-	let [error, {img: image, css: Css, js: Configs}] = require('./lib/solve.file.js')(argv._)
-	const Styles = require('./lib/style.js')(Css || 'canvas {}')
-	if (error) throw error
+	let {img: image, css: Css, js: Configs} = yield require('./lib/solve.file.js')(argv)
+	const Styles = parseStyles(Css || 'canvas {}')
 
 	argv.lib = EslafPaintCanvas
 	if (Configs instanceof Function) Configs = Configs(argv)
-	
-	const transformOldTextTypeToNew =
-		op =>
-			({type: 'text', text: op[0], styles: op[2], use: op[1]})
+	Configs = yield Configs
 
-	const staticConfig = map(yield Configs, config =>
-		config.map(op => Array.isArray(op) ? transformOldTextTypeToNew(op) : op)
-			.map(op => {
-				op.styles = merge(op.styles, Styles('.' + op.use))
-				return op
-			})
-	)
-	
-	return map(
-		map(
-			staticConfig, x => ({
-				staticConfig: x,
-				image, canvas: {
-					width: Styles('canvas').width,
-					height: Styles('canvas').height
-				}}
-			)
-		), (data, name) => {
-			const to = staticPainer(data,  name)
-			stepCallback(name, to)
-			return to
-		})
+	for (let key in Configs) {
+		let config = Configs[key]
+		for (let op of config) {
+			op.styles = merge(op.styles, Styles('.' + op.use))
+
+			if (op.type == 'img') {
+				let src = op.src
+				let img = yield Jimp.read(isString(src) ? src : yield src)
+				op.src = yield getPNGBuffer(img)
+			}
+		}
+	}
+
+	let cfg = map(Configs, x => ({
+		staticConfig: x,
+		image,
+		canvas: {
+			width: Styles('canvas').width,
+			height: Styles('canvas').height
+		}
+	}))
+
+	return map(cfg, (data, name) => {
+		const to = staticPainer(data, name)
+		stepCallback(name, to)
+		return to
+	})
 })
+
 module.exports.lib = EslafPaintCanvas

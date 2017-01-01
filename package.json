@@ -1,6 +1,6 @@
 {
   "name": "eslaf-paint",
-  "version": "0.4.3",
+  "version": "0.5.0",
   "main": "index.js",
   "author": "Jack Works (Vola Studio)",
   "license": "MIT",
@@ -9,6 +9,8 @@
     "canvas": "^1.4.0",
     "co": "^4.6.0",
     "css": "^2.2.1",
+    "fs-promise": "^1.0.0",
+    "jimp": "^0.2.27",
     "lodash.clonedeep": "^4.5.0",
     "lodash.defaultsdeep": "^4.6.0",
     "lodash.reduceright": "^4.6.0",
