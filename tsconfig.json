@@ -1,0 +1,20 @@
+{
+	"compilerOptions": {
+		"module": "commonjs",
+		"removeComments": true,
+		"preserveConstEnums": true,
+		"target": "es6",
+		"outDir": "../prod",
+		"types": [
+			"node"
+		],
+		"noImplicitAny": true
+	},
+	"exclude": [
+		"../node_modules"
+	],
+	"include": [
+		"./src/",
+		"./index.ts"
+	]
+}

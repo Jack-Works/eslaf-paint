@@ -15,7 +15,7 @@ argv._.filter(t).forEach(img => {
 	let _argv = argv
 	_argv._ = _argv._.filter(x => !t(x))
 	_argv._.push(img)
-	require('./index.js')(_argv._, (name, data) => {
+	require('../index.js')(_argv._, (name, data) => {
 		const output = name.replace(/\$/g, path.basename(img))
 		const outputDir = path.dirname(output)
 		if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir)

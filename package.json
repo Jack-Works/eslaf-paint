@@ -7,7 +7,6 @@
   "dependencies": {
     "camelize": "^1.0.0",
     "canvas": "^1.4.0",
-    "co": "^4.6.0",
     "css": "^2.2.1",
     "fs-promise": "^1.0.0",
     "jimp": "^0.2.27",
@@ -18,13 +17,26 @@
     "parse-unit": "^1.0.1"
   },
   "bin": {
-    "eslaf-paint": "./cli.js"
+    "eslaf-paint": "./prod/cli.js"
   },
   "engines": {
     "node": ">=v6.0.0"
   },
   "types": "./module-function.d.ts",
   "devDependencies": {
-    "@types/node": "^6.0.48"
+    "@types/css": "0.0.30",
+    "@types/fs-promise": "^1.0.1",
+    "@types/jimp": "^0.2.0",
+    "@types/lodash": "^4.14.52",
+    "@types/lodash.reduceright": "^4.6.1",
+    "@types/minimist": "^1.2.0",
+    "@types/node": "^7.0.5",
+    "@types/parse-unit": "^1.0.0",
+    "dts-generator": "^2.1.0",
+    "typescript": "^2.1.5"
+  },
+  "scripts": {
+    "prepublish": "tsc",
+    "typefile": "dts-generator --name eslaf-paint --project ./src/index.js --out eslaf-paint.d.ts"
   }
 }
