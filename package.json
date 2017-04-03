@@ -1,6 +1,6 @@
 {
   "name": "eslaf-paint",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "main": "index.js",
   "author": "Jack Works (Vola Studio)",
   "license": "MIT",
@@ -34,9 +34,5 @@
     "@types/parse-unit": "^1.0.0",
     "dts-generator": "^2.1.0",
     "typescript": "^2.1.5"
-  },
-  "scripts": {
-    "prepublish": "tsc",
-    "typefile": "dts-generator --name eslaf-paint --project ./src/index.js --out eslaf-paint.d.ts"
   }
 }

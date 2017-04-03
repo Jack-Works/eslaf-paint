@@ -2,12 +2,13 @@ import merge = require('lodash.defaultsdeep')
 import clone = require('lodash.clonedeep')
 import Jimp = require('jimp')
 
-import { EslafPaintCanvas } from './src/lib/canvas'
-import parseStyles from './src/lib/style'
+import { EslafPaintCanvas } from './lib/canvas'
+import parseStyles from './lib/style'
+import fileSolve from './lib/solve.file'
 
-import * as css from './src/types/css'
-import * as profile from './src/types/profile'
-import { ISolvedFileType } from './src/lib/solve.file'
+import * as css from './types/css'
+import * as profile from './types/profile'
+import { ISolvedFileType } from './lib/solve.file'
 
 const map = (obj: {[key: string]: any}, fn: (<T>(item: T, index: string) => T)) => {
 	obj = clone(obj)
@@ -48,9 +49,8 @@ async function getPNGBuffer(img: Jimp): Promise<Buffer> {
 	}))
 }
 
-
-import fileSolve from './src/lib/solve.file'
 export default async (argv: {_: Array<string | ISolvedFileType>, [anyArg: string]: any, lib?: Function}, stepCallback = (name: string, data: Buffer) => {}) => {
+	console.log(argv)
 	let {img: image, css: Css, js: Configs} = await fileSolve(argv._)
 	const Styles = parseStyles(Css || 'canvas {}')
 

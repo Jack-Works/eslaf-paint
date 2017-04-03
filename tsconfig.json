@@ -4,17 +4,16 @@
 		"removeComments": true,
 		"preserveConstEnums": true,
 		"target": "es6",
-		"outDir": "../prod",
+		"outDir": "./prod",
 		"types": [
 			"node"
 		],
-		"noImplicitAny": true
+		"noImplicitAny": true,
+		"sourceMap": true
 	},
 	"exclude": [
-		"../node_modules"
+		"./node_modules",
+		"./prod"
 	],
-	"include": [
-		"./src/",
-		"./index.ts"
-	]
+	"include": ["./"]
 }
