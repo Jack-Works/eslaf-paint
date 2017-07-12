@@ -1,11 +1,9 @@
 import merge = require('lodash.defaultsdeep')
 import clone = require('lodash.clonedeep')
-import Jimp = require('jimp')
 
-import { EslafPaintCanvasForNode } from './lib/node'
+import { EslafPaintForBrowser } from "./lib/browser"
 import { AbstractEslafPaintCanvas } from './lib/abstract.painter'
 import parseStyles from './lib/style'
-import fileSolve from './lib/solve.file'
 
 import * as css from './types/css'
 import * as profile from './types/profile'
@@ -32,25 +30,25 @@ const getTypeof = (orig: profile.Task): [Function, profile.Task] => {
 }
 
 function staticPainer(
-	{ staticConfig, image, canvas: { width, height } }:
-		{ staticConfig: profile.Task[], image: string | Buffer, canvas: css.Canvas }) {
-	const canvas = new EslafPaintCanvasForNode({
-		buffer: image, width, height
+	{ staticConfig, image, canvas: { width, height }, element }:
+		{ staticConfig: profile.Task[], image: string, canvas: css.Canvas, element: HTMLCanvasElement }) {
+	const canvas = new EslafPaintForBrowser({
+		background: image, width, height, canvas: element
 	})
 	staticConfig.map(getTypeof)
 		.forEach(([paintFunction, data]) => paintFunction(canvas, data))
-	return canvas.canvas.toBuffer()
+	return element
 }
 
-async function getPNGBuffer(img: Jimp): Promise<Buffer> {
-	return new Promise<Buffer>((resolve, reject) => img.getBuffer(Jimp.MIME_PNG, (err, data) => {
-		if (err) reject(err)
-		else resolve(data)
-	}))
-}
-
-export default async (argv: { _: Array<string | ISolvedFileType>, [anyArg: string]: any, lib?: Function }, stepCallback = (name: string, data: Buffer) => { }) => {
-	let { img: image, css: Css, js: Configs } = await fileSolve(argv._)
+export default async (argv: {
+	_: {
+		background: string,
+		css: string,
+		config: profile.Profile,
+		element: HTMLCanvasElement
+	}, [anyArg: string]: any, lib?: Function
+}, stepCallback = (name: string, data: HTMLCanvasElement) => { }) => {
+	let { background: image, css: Css, config: Configs } = argv._
 	const Styles = parseStyles(Css || 'canvas {}')
 
 	argv.lib = AbstractEslafPaintCanvas
@@ -58,26 +56,21 @@ export default async (argv: { _: Array<string | ISolvedFileType>, [anyArg: strin
 	Configs = await Configs
 
 	for (let key in Configs) {
-		let config = Configs[key]
+		let config = await Configs[key]
 		for (let op of config) {
 			op.styles = merge(op.styles, Styles('.' + op.use))
-
-			if (op.type == 'img') {
-				let src = op.src
-				let img = await Jimp.read(typeof src === 'string' ? src : await src)
-				op.src = await getPNGBuffer(img)
-			}
 		}
 	}
 
-	let cfg: { [key: string]: { staticConfig: profile.Task[], image: string | Buffer, canvas: css.Canvas } } = {}
-	Object.keys(Configs).forEach(name => cfg[name] = {
-		staticConfig: Configs[name],
+	let cfg: { [key: string]: { staticConfig: profile.Task[], image: string, canvas: css.Canvas, element: HTMLCanvasElement } } = {}
+	Object.keys(Configs).forEach(async name => cfg[name] = {
+		staticConfig: await Configs[name],
 		image,
 		canvas: {
 			width: Styles('canvas').width,
 			height: Styles('canvas').height
-		}
+		},
+		element: argv._.element
 	})
 
 	let result: { [key: string]: Buffer } = {}

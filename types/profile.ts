@@ -22,8 +22,8 @@ export interface Profile {
 }
 export type Arg =
 	// path to profile
-	string | 
-	{type: 'profile', data: Profile} |
-	{type: 'profile', data: Promise<Profile>} |
-	{type: 'profile', data: (args?: any) => Profile} |
-	{type: 'profile', data: (args?: any) => Promise<Profile>}
+	string |
+	{ type: 'profile', data: Profile } |
+	{ type: 'profile', data: Promise<Profile> } |
+	{ type: 'profile', data: (args?: any) => Profile } |
+	{ type: 'profile', data: (args?: any) => Promise<Profile> }

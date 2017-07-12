@@ -18,29 +18,7 @@ declare module 'canvas' {
 		addPage(): void
 	}
 	namespace Canvas {
-		export class Image {
-			border: string
-			readonly complete: boolean
-			readonly currentSrc: string
-			height: number
-			hspace: number
-			isMap: boolean
-			longDesc: string
-			lowsrc: string
-			name: string
-			readonly naturalHeight: number
-			readonly naturalWidth: number
-			sizes: string
-			srcset: string
-			useMap: string
-			vspace: number
-			width: number
-			readonly x: number
-			readonly y: number
-
-			src: string | Buffer
-			dataMode: number
-
+		export class Image extends HTMLImageElement {
 			pngStream(): NodeJS.ReadableStream
 			jpegStream(opt?: Canvas.JPEGStreamOptions): NodeJS.ReadableStream
 			syncJPEGStream(opt?: Canvas.JPEGStreamOptions): NodeJS.ReadableStream

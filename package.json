@@ -27,7 +27,7 @@
     "@types/css": "0.0.30",
     "@types/fs-promise": "^1.0.1",
     "@types/jimp": "^0.2.0",
-    "@types/lodash": "^4.14.52",
+    "@types/lodash": "^4.14.66",
     "@types/lodash.reduceright": "^4.6.1",
     "@types/minimist": "^1.2.0",
     "@types/node": "^7.0.5",
